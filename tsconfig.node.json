@@ -6,7 +6,6 @@
     "cypress.config.*",
     "nightwatch.conf.*",
     "playwright.config.*",
-    "node_modules",
   ],
   "compilerOptions": {
     "composite": true,
