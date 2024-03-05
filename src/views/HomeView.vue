@@ -4,7 +4,7 @@
       v-if="posStore.myCart.length"
       class="animate-in slide-in-from-right duration-700 sm:hidden fixed z-40 h-10 w-10 bottom-2 right-0 bg-gray-50 flex items-center pl-4 pr-1 border-r border-y rounded-l-full"
       @click="router.push({name: 'cart'})">
-      <ShoppingCartIcon class="h-5 w-5"/>
+      <MaterialSymbolsLightShoppingCart class="h-5 w-5 text-3xl"/>
     </div>
 
     <portal to="searchBar">
@@ -14,7 +14,7 @@
                type="text"/>
         <div :class="[showSearch? 'absolute top-0 right-[0.2px]': '']">
           <CircleButton :class="[showSearch? 'p-1.5 w-9 h-[36px] rounded-2xl border border-gray-300': '']" @click="showSearch = !showSearch">
-            <MagnifyingGlassIcon class="h-4"/>
+            <MaterialSymbolsLightSearch class="h-4 w-4"/>
           </CircleButton>
         </div>
       </div>
@@ -22,7 +22,7 @@
 
     <!--section heading-->
     <div class="animate-in slide-in-from-top duration-700 flex items-center gap-2 text-gray-500">
-      <ShoppingBagIcon class="h-5 sm:h-6"/>
+      <MaterialSymbolsLightShoppingBasket class="h-5 sm:h-6 text-xl"/>
       <h2 class="sm:text-xl font-bold leading-6 tracking-tighter">Categories</h2>
     </div>
 
@@ -174,7 +174,7 @@ import {computed, onMounted, reactive, ref, watch} from "vue";
 import {vInfiniteScroll} from '@vueuse/components'
 import {useVirtualList} from '@vueuse/core'
 import type {CategoriesStoreResponse, ProductCategory} from "@/types/ewityCategory";
-import {ArrowsPointingInIcon, ShoppingBagIcon, ShoppingCartIcon} from "@heroicons/vue/24/solid";
+import {ArrowsPointingInIcon} from "@heroicons/vue/24/solid";
 import type {Product, ProductForCart, ProductsStoreResponse} from "@/types/ewityProducts";
 import CDialog from "@/components/cDialog.vue";
 import ComboBox from "@/components/ComboBox.vue";
@@ -184,9 +184,11 @@ import NButton from "@/components/nButton.vue";
 import {required} from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import CircleButton from "@/components/CircleButton.vue";
-import {MagnifyingGlassIcon} from "@heroicons/vue/20/solid";
 import {debounce} from "lodash";
 import {useRouter} from "vue-router";
+import MaterialSymbolsLightShoppingCart from "@/components/icons/cart.vue";
+import MaterialSymbolsLightShoppingBasket from "@/components/icons/basket.vue";
+import MaterialSymbolsLightSearch from "@/components/icons/search.vue"
 
 const userStore = useUserStore()
 const posStore = usePosStore()

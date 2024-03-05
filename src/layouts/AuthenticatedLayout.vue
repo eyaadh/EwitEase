@@ -9,15 +9,16 @@
           </div>
         </div>
         <div class="h-2/4 flex-1 flex flex-col gap-4">
-          <template v-for="nav in navs">
+          <template v-for="nav in navs" :key="nav.id">
             <router-link :to="nav.location"
                          :class="[nav.active ? 'bg-gray-950/40': '',
                          'p-2.5 rounded-full border text-sm text-gray-950 hover:bg-gray-950/40 hover:text-white focus:outline-none focus:ring-1 focus:ring-gray-100']">
-              <component :is="nav.icon" class="h-4"/>
+              <component :is="nav.icon"/>
             </router-link>
           </template>
-          <div @click="logoutUser()" class="p-2.5 rounded-full border text-sm text-gray-950 hover:bg-gray-950/40 hover:text-white focus:outline-none focus:ring-1 focus:ring-gray-100">
-            <MaterialSymbolsLightLock class="h-4" />
+          <div @click="logoutUser()"
+               class="p-2.5 rounded-full border text-sm text-gray-950 hover:bg-gray-950/40 hover:text-white focus:outline-none focus:ring-1 focus:ring-gray-100">
+            <MaterialSymbolsLightLock class="h-4"/>
           </div>
         </div>
       </div>
@@ -39,13 +40,12 @@
                 <div
                   class="max-w-md flex-auto overflow-hidden rounded-md bg-gray-100 text-sm leading-6 shadow-md ring-1 ring-gray-900/5">
                   <div class="p-0.5 divide-y">
-                    <router-link :to="nav.location" v-for="nav in navs"
-                                 class="group relative flex items-center gap-x-2 rounded-md p-2 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-100">
+                    <router-link :to="nav.location" v-for="nav in navs" :key="nav.id"
+                                 class="group flex items-center gap-x-2 rounded-md p-2 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-100">
                       <div
                         class="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-gray-50 group-hover:bg-white">
                         <component :is="nav.icon"
-                                   :class="[nav.active ? 'bg-gray-950/40': '', 'p-2 rounded-full border text-xm text-gray-950 hover:bg-gray-950/40 hover:text-white']"
-                                   aria-hidden="true"/>
+                                   :class="[nav.active ? 'bg-gray-950/40': '', 'p-1 rounded-full border text-3xl text-gray-950 hover:bg-gray-950/40 hover:text-white']"/>
                       </div>
                       <div>
                         <span class="font-semibold leading-5 tracking-tighter text-xs text-gray-600">
@@ -58,7 +58,7 @@
                       class="group relative flex items-center gap-x-2 rounded-md p-2 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-100">
                       <div
                         class="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-gray-50 group-hover:bg-white">
-                        <MaterialSymbolsLightLock />
+                        <MaterialSymbolsLightLock/>
                       </div>
                       <div>
                         <span class="font-semibold leading-5 tracking-tighter text-xs text-gray-600">
@@ -81,7 +81,7 @@
         <div class="h-full p-2.5">
           <div class="h-full rounded-2xl bg-gray-50">
             <router-view v-slot="{Component}">
-              <component :is="Component" class="animate-in slide-in-from-right duration-700" />
+              <component :is="Component" class="animate-in slide-in-from-right duration-700"/>
             </router-view>
           </div>
         </div>
@@ -92,20 +92,23 @@
 </template>
 
 <script setup lang="ts">
-import {Bars3Icon, ListBulletIcon, HomeIcon, ShoppingCartIcon} from "@heroicons/vue/20/solid";
+import {Bars3Icon, ListBulletIcon} from "@heroicons/vue/20/solid";
 import {Popover, PopoverButton, PopoverPanel} from '@headlessui/vue'
-import {computed, onMounted, reactive, watch} from "vue";
+import {computed, onMounted, reactive, shallowRef, watch} from "vue";
 import type {navigation} from "@/types/navigation";
 import {useUserStore} from "@/stores/userStore";
 import {useRoute, useRouter} from "vue-router";
 import {PortalTarget} from "portal-vue";
 import MaterialSymbolsLightLock from "@/components/icons/lock.vue";
+import MaterialSymbolsLightStore from "@/components/icons/home.vue"
+import MaterialSymbolsLightShoppingCart from "@/components/icons/cart.vue"
+import MaterialSymbolsLightListAltRounded from "@/components/icons/list.vue"
 
 const route = useRoute()
 const navs = reactive<navigation[]>([
-  {location: '/', icon: HomeIcon, name: 'Store Home', active: true},
-  {location: '/cart', icon: ShoppingCartIcon, name: 'My Cart', active: false},
-  {location: '/sales', icon: ListBulletIcon, name: 'My Sales', active: false},
+  {id: 1, location: '/', icon: shallowRef(MaterialSymbolsLightStore), name: 'Store Home', active: true},
+  {id: 2, location: '/cart', icon: shallowRef(MaterialSymbolsLightShoppingCart), name: 'My Cart', active: false},
+  {id: 3, location: '/sales', icon: shallowRef(MaterialSymbolsLightListAltRounded), name: 'My Sales', active: false},
 ])
 
 const activeNav = computed<navigation>(() => {

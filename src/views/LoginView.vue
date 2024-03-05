@@ -31,14 +31,14 @@
                   <div class="absolute inset-y-0 left-0 flex items-center">
                     <label class="sr-only" for="country">Country</label>
                     <select id="country" v-model="countryCode" autocomplete="country"
-                            class="h-full rounded-md border-0 bg-transparent py-0 pl-3 pr-7 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm"
+                            class="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-8 text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600"
                             name="country">
                       <option value="+960">MV(+960)</option>
                       <option value="+1">US(+1)</option>
                     </select>
                   </div>
                   <input id="phone-number" v-model="phoneNumber"
-                         class="block w-full rounded-md border-0 py-1.5 pl-28 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
+                         class="block w-full rounded-md border-0 py-1.5 pl-28 text-sm text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:leading-6"
                          name="phone-number"
                          placeholder="987-6543"
                          type="text"/>
