@@ -37,7 +37,7 @@ import {
 } from '@headlessui/vue'
 
 const emits = defineEmits<{
-  selected: [value: propsItem]
+  selected: [value: PropsItem]
 }>()
 
 interface PropsItem {
