@@ -1,0 +1,12 @@
+<template>
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+    <path fill="currentColor"
+          d="M13 20.5v-1h7v1zm3-2.77V8.078q0-.617-.441-1.059q-.442-.441-1.059-.441h-3.808v2.846q0 .343-.232.576q-.232.232-.575.232h-4.25q-.454 0-.687-.364q-.233-.363-.046-.767L6.7 4.97q.212-.455.604-.712Q7.696 4 8.179 4h.898q.658 0 1.127.463q.47.462.488 1.114H14.5q1.042 0 1.77.73q.73.728.73 1.77v9.654z"></path>
+  </svg>
+</template>
+
+<script lang="ts">
+export default {
+  name: 'MaterialSymbolsLightTableLamp'
+}
+</script>
