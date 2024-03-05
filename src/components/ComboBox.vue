@@ -40,29 +40,29 @@ const emits = defineEmits<{
   selected: [value: propsItem]
 }>()
 
-interface propsItem {
+interface PropsItem {
   id: number | string
   name: string
 }
-interface props {
-  items: propsItem[],
+interface Props {
+  items: PropsItem[],
   label?: string
 }
 
-const props = withDefaults(defineProps<props>(), {
+const props = withDefaults(defineProps<Props>(), {
   items: () => [{ id: 1, name: 'Leslie Alexander' }],
   label: 'Default'
 })
 
 
 const query = ref<string>('')
-const selectedItem = ref<propsItem>(props.items[0])
+const selectedItem = ref<PropsItem>(props.items[0])
 
-watch(() => selectedItem.value, (newValue: propsItem) => {
+watch(() => selectedItem.value, (newValue: PropsItem) => {
   emits('selected', newValue)
 }, {deep: true})
 
-const filteredItems = computed<propsItem[]>(() =>
+const filteredItems = computed<PropsItem[]>(() =>
   query.value === ''
     ? props.items
     : props.items.filter((item) => {
