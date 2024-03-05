@@ -2,7 +2,7 @@
   <Combobox as="div" v-model="selectedItem" class="flex flex-col items-end">
     <ComboboxLabel class="block text-xs font-light leading-6 text-gray-900">{{ props.label }}</ComboboxLabel>
     <div class="relative mt-2 w-full">
-      <ComboboxInput class="w-full rounded-md border-0 bg-white py-1 pl-3 pr-10 text-gray-900 capitalize shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-slate-600 text-sm leading-6" @change="query = $event.target.value" :display-value="(item) => item?.name" />
+      <ComboboxInput class="w-full rounded-md border-0 bg-white py-1 pl-3 pr-10 text-gray-900 capitalize shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-slate-600 text-sm leading-6" @change="query = $event.target.value" :display-value="(item) => (item as PropsItem).name" />
       <ComboboxButton class="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
         <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
       </ComboboxButton>
