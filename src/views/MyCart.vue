@@ -4,9 +4,9 @@
       <template #body>
         <div class="flex flex-col items-center text-center">
           <MaterialSymbolsLightCheckCircle class="text-4xl" v-if="notification.type === LogLevel.SUCCESS "/>
-          <MaterialSymbolsLightContactSupport class="text-4xl" v-if="notification.type === LogLevel.WARN "/>
-          <MaterialSymbolsLightError class="text-4xl" v-else />
-          <p class="text-xs font-extralight text-center">{{notification.body}}</p>
+          <MaterialSymbolsLightContactSupport class="text-4xl" v-else-if="notification.type === LogLevel.WARN "/>
+          <MaterialSymbolsLightError class="text-4xl" v-else/>
+          <p class="text-xs font-extralight text-center">{{ notification.body }}</p>
         </div>
       </template>
     </c-dialog>
@@ -72,6 +72,7 @@ import MaterialSymbolsLightContactSupport from "@/components/icons/question.vue"
 import MaterialSymbolsLightError from "@/components/icons/error.vue";
 import {useRouter} from "vue-router";
 import MaterialSymbolsLightCheckCircle from "@/components/icons/success.vue";
+import {informViaTelegram} from "@/utils/telegramInterface";
 
 const posStore = usePosStore();
 const userStore = useUserStore()
@@ -85,6 +86,7 @@ enum LogLevel {
   DEBUG,
   SUCCESS
 }
+
 interface Notification {
   title: string,
   body: string,
@@ -130,14 +132,36 @@ const isPlaceOrderAllowed = computed<boolean>(() => {
   return posStore.myCart.length > 0
 })
 
-const postToEwity = async() => {
+const postToEwity = async () => {
   if (!userStore.customer) {
     await router.push({name: 'home'})
     return
   }
+
+  const cartDetails: string[] = []
+  posStore.myCart.forEach(p => {
+    cartDetails.push(`📌 <b><i>${p.product_name}</i></b> - MRF ${p.total_base_sales_price.toFixed(2)}`)
+  })
+
+  const quotationId = await posStore.createQuotation(userStore.customer.id)
+
+  const message: string = `<b><i>🛍 We have received an order: ${quotationId} 🛍</i></b>\n\n<b><i>🎫 Customer Details: 🎫</i></b>\n<b>Name:</b> ${userStore.customer.name}\n<b>Contact Number:</b> ${userStore.customer.mobile}\n<b>Credit Limit:</b> ${userStore.customer.credit_limit}\n<b>Total Outstanding:</b> ${userStore.customer.total_outstanding}\n<b>Total Spent:</b> ${userStore.customer.total_spent}\n\n<b><i>🛒 Order Details: 🛒</i></b>\n${cartDetails.join('\n')}\n\n\n<b>Sub total:</b> ${subTotal.value.toFixed(2)}\n<b>Tax:</b> ${tax.value.toFixed(2)}\n<b>💵 Bill total:</b> ${orderTotal.value.toFixed(2)}`
+
+  await informViaTelegram(message)
+
+  posStore.myCart = []
+
+  notification.title = 'Your order has been placed!'
+  notification.type = LogLevel.SUCCESS
+  notification.body = 'The order has been placed, a representative from the store will contact on the given contact number to finalize the delivery.'
+  notificationDialog.value?.openModal()
+  setTimeout(() => {
+    notificationDialog.value?.closeModal()
+    router.push({name: 'home'})
+  }, 6000)
 }
 
-onMounted( async () => {
+onMounted(async () => {
   if (!userStore.customer) {
     notification.title = 'You cannot place an order!'
     notification.type = LogLevel.ERROR

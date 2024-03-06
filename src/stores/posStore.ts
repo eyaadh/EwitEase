@@ -20,7 +20,7 @@ export const usePosStore = defineStore("posStore", {
             }
         } as AxiosRequestConfig,
         apiUrl: import.meta.env.VITE_POS_API_URL as string,
-        locationId: 7220,
+        locationId: import.meta.env.VITE_POS_LOCATION_ID as number,
         categories: null as ProductCategory[] | null,
         categoryFilter: null as string | null,
         categoriesDefaultImage: defaultCategoryImage,
@@ -125,6 +125,32 @@ export const usePosStore = defineStore("posStore", {
                 } catch (e) {
                     reject(e)
                 }
+            })
+        },
+        createQuotation(customerId: number): Promise<string> {
+            return new Promise(async (resolve, reject) => {
+                //1 . create quotation
+                const config: AxiosRequestConfig = {...this.axiosConfig}
+                config.method = 'POST'
+                config.url = `${this.apiUrl}v1/quotations`
+                config.data = {
+                    "location_id": this.locationId,
+                    "customer_id": customerId,
+                }
+                try {
+                    const newQuote = await axios.request(config)
+                    //2. collect the quotation ID for the newly created quotation
+                    const newQuoteId = newQuote.data.data.id
+                    //3. update the quotation with my cart
+                    config.url = `${this.apiUrl}v1/quotations/${newQuoteId}/lines`
+                    config.data = {lines: this.myCart}
+
+                    const updatedQuote = await axios.request(config)
+                    resolve(updatedQuote.data.data.number)
+                } catch (e) {
+                    reject(e)
+                }
+
             })
         }
     }
