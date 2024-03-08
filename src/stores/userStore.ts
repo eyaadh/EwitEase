@@ -5,6 +5,7 @@ import axios from "axios";
 import type {AxiosRequestConfig} from 'axios'
 import type {FirebaseUser} from "@/types/firebaseUser";
 import type {Customer} from "@/types/ewityCustomer";
+import generateSignature from "@/utils/generateProxySignature";
 
 
 export const useUserStore = defineStore("userStore", {
@@ -12,14 +13,11 @@ export const useUserStore = defineStore("userStore", {
         userData: null as FirebaseUser | null,
         customer: null as Customer | null,
         loadingSession: false,
-        apiUrl: import.meta.env.VITE_POS_API_URL as string,
+        proxyApiUrl: import.meta.env.VITE_PROXY_API_URL as string,
         axiosConfig: {
             method: 'get' as string,
             maxBodyLength: Infinity,
             url: null as string | null,
-            headers: {
-                'Authorization': import.meta.env.VITE_POS_API_KEY
-            }
         } as AxiosRequestConfig
     }),
     actions: {
@@ -35,34 +33,40 @@ export const useUserStore = defineStore("userStore", {
             })
         },
         fetchCustomerDetails() {
-            return new Promise((resolve, reject) => {
+            return new Promise(async (resolve, reject) => {
                 const config: AxiosRequestConfig = {...this.axiosConfig}
-                config.url = `${this.apiUrl}v1/customers?q_q=${this.userData?.phoneNumber}`
-                axios.request(config)
-                    .then((response) => {
-                        this.customer = response.data.pagination.total > 0 ? response.data.data[0] : null
-                        resolve(this.customer)
-                    })
-                    .catch((error) => {
-                        reject(error)
-                    })
+                config.url = `${this.proxyApiUrl}customers/${this.userData?.phoneNumber}`
+                config.headers = {
+                    'X-Signature': generateSignature(config.url)
+                }
+
+                try {
+                    const response = await axios.request(config)
+                    this.customer = response.data.pagination.total > 0 ? response.data.data[0] : null
+                    resolve(this.customer)
+                } catch (e) {
+                    reject(e)
+                }
             })
         },
         createPOSCustomer(data: any) {
-            return new Promise((resolve, reject) => {
+            return new Promise(async (resolve, reject) => {
                 const config = this.axiosConfig
                 config.method = 'POST'
-                config.url = 'https://cros-proxy.eyaadh.workers.dev/?apiUrl=https://api.ewitypos.com/v1/customers'
+                config.url = `${this.proxyApiUrl}customers`
                 config.data = data
 
-                axios.request(config)
-                    .then((response) => {
-                        this.customer = response.data.data
-                        resolve(this.customer)
-                    })
-                    .catch((error) => {
-                        reject(error)
-                    });
+                config.headers = {
+                    'X-Signature': generateSignature(config.url)
+                }
+
+                try {
+                    const response = await axios.request(config)
+                    this.customer = response.data.data
+                    resolve(this.customer)
+                } catch (e) {
+                    reject(e)
+                }
             })
         },
         currentUser() {

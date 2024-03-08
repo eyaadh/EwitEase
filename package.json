@@ -21,6 +21,7 @@
     "@vueuse/core": "^10.9.0",
     "@vueuse/motion": "^2.1.0",
     "axios": "^1.6.7",
+    "crypto-js": "^4.2.0",
     "firebase": "^10.8.0",
     "lodash": "^4.17.21",
     "pinia": "^2.1.7",
@@ -33,6 +34,7 @@
   "devDependencies": {
     "@tsconfig/node20": "^20.1.2",
     "@types/axios": "^0.14.0",
+    "@types/crypto-js": "^4.2.2",
     "@types/lodash": "^4.14.202",
     "@types/node": "^20.11.10",
     "@vitejs/plugin-vue": "^5.0.3",

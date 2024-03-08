@@ -8,6 +8,7 @@ import type {ProductCategory} from "@/types/ewityCategory";
 import type {Product, ProductForCart} from "@/types/ewityProducts";
 import type {BillData, SaleData} from "@/types/ewitySales";
 import type {Customer} from "@/types/ewityCustomer";
+import generateSignature from "@/utils/generateProxySignature";
 
 export const usePosStore = defineStore("posStore", {
     state: () => ({
@@ -15,11 +16,9 @@ export const usePosStore = defineStore("posStore", {
             method: 'get' as string,
             maxBodyLength: Infinity,
             url: null as string | null,
-            headers: {
-                'Authorization': import.meta.env.VITE_POS_API_KEY
-            }
+            headers: {}
         } as AxiosRequestConfig,
-        apiUrl: import.meta.env.VITE_POS_API_URL as string,
+        proxyApiUrl: import.meta.env.VITE_PROXY_API_URL as string,
         locationId: import.meta.env.VITE_POS_LOCATION_ID as number,
         categories: null as ProductCategory[] | null,
         categoryFilter: null as string | null,
@@ -42,7 +41,11 @@ export const usePosStore = defineStore("posStore", {
             return new Promise(async (resolve, reject) => {
                 const config: AxiosRequestConfig = {...this.axiosConfig}
                 config.method = 'GET'
-                config.url = `${this.apiUrl}v1/products/categories?page=${this.categoriesPage}`
+                config.url = `${this.proxyApiUrl}products/categories?page=${this.categoriesPage}`
+                config.headers = {
+                    'X-Signature': generateSignature(config.url)
+                }
+
                 try {
                     const resp = await axios.request(config)
                     if (resp.data.pagination.total > 0) {
@@ -62,9 +65,12 @@ export const usePosStore = defineStore("posStore", {
             return new Promise(async (resolve, reject) => {
                 const config: AxiosRequestConfig = {...this.axiosConfig}
                 config.method = 'GET'
-                config.url = `${this.apiUrl}v1/products/locations/all?q_Category=${this.selectedCategoryId}&page=${this.productsPage}`
+                config.url = `${this.proxyApiUrl}products/locations/all?q_Category=${this.selectedCategoryId}&page=${this.productsPage}`
                 if (this.productFilterQueryValue) {
-                    config.url = `${this.apiUrl}v1/products/locations/all?q_name=${this.productFilterQueryValue}&page=${this.productsPage}`
+                    config.url = `${this.proxyApiUrl}products/locations/all?q_name=${this.productFilterQueryValue}&page=${this.productsPage}`
+                }
+                config.headers = {
+                    'X-Signature': generateSignature(config.url)
                 }
                 try {
                     const resp = await axios.request(config)
@@ -85,7 +91,10 @@ export const usePosStore = defineStore("posStore", {
             return new Promise(async (resolve, reject) => {
                 const config: AxiosRequestConfig = {...this.axiosConfig}
                 config.method = 'GET'
-                config.url = `${this.apiUrl}v1/products/${itemId}`
+                config.url = `${this.proxyApiUrl}products/${itemId}`
+                config.headers = {
+                    'X-Signature': generateSignature(config.url)
+                }
                 try {
                     const resp = await axios.request(config)
                     resolve(resp.data.data)
@@ -98,9 +107,11 @@ export const usePosStore = defineStore("posStore", {
             return new Promise(async (resolve, reject) => {
                 const config: AxiosRequestConfig = {...this.axiosConfig}
                 config.method = 'GET'
-                config.url = `${this.apiUrl}v1/sales/bills/customer/${customer.id}`
-                // config.url = `${this.apiUrl}v1/sales/bills/customer/924851`
-
+                // config.url = `${this.proxyApiUrl}sales/bills/customer/924851`
+                config.url = `${this.proxyApiUrl}sales/bills/customer/${customer.id}`
+                config.headers = {
+                    'X-Signature': generateSignature(config.url)
+                }
                 try {
                     const resp = await axios.request(config)
                     if (resp.data.data.length > 0) {
@@ -116,7 +127,10 @@ export const usePosStore = defineStore("posStore", {
             return new Promise(async (resolve, reject) => {
                 const config: AxiosRequestConfig = {...this.axiosConfig}
                 config.method = 'GET'
-                config.url = `${this.apiUrl}v1/sales/bills/${billNumber}`
+                config.url = `${this.proxyApiUrl}sales/bills/${billNumber}`
+                config.headers = {
+                    'X-Signature': generateSignature(config.url)
+                }
 
                 try {
                     const resp = await axios.request(config)
@@ -129,24 +143,22 @@ export const usePosStore = defineStore("posStore", {
         },
         createQuotation(customerId: number): Promise<string> {
             return new Promise(async (resolve, reject) => {
-                //1 . create quotation
                 const config: AxiosRequestConfig = {...this.axiosConfig}
                 config.method = 'POST'
-                config.url = `${this.apiUrl}v1/quotations`
+                config.url = `${this.proxyApiUrl}quotations`
                 config.data = {
                     "location_id": this.locationId,
                     "customer_id": customerId,
+                    "lines": this.myCart
                 }
-                try {
-                    const newQuote = await axios.request(config)
-                    //2. collect the quotation ID for the newly created quotation
-                    const newQuoteId = newQuote.data.data.id
-                    //3. update the quotation with my cart
-                    config.url = `${this.apiUrl}v1/quotations/${newQuoteId}/lines`
-                    config.data = {lines: this.myCart}
 
-                    const updatedQuote = await axios.request(config)
-                    resolve(updatedQuote.data.data.number)
+                config.headers = {
+                    'X-Signature': generateSignature(config.url)
+                }
+
+                try {
+                    const quote = await axios.request(config)
+                    resolve(quote.data.data.number)
                 } catch (e) {
                     reject(e)
                 }
