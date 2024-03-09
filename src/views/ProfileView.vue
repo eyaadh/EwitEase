@@ -22,11 +22,11 @@
               </div>
             </div>
             <div class="flex justify-center items-center rounded-full p-2 w-12 h-12 bg-gray-950 text-white text-sm">
-              <span>{{ userStore.customer ? userStore.customer!.name.match(/(\b\S)?/g).join("").toUpperCase() : 'EE' }}</span>
+              <span>{{ initials }}</span>
             </div>
           </div>
           <div class="p-2 mx-auto text-[10px] font-light italic">
-            <p>Member since: {{ new Date(userStore.customer?.created_unix * 1000).toLocaleDateString('en-US') }}</p>
+            <p>Member since: {{ joinedDate }}</p>
           </div>
         </div>
       </div>
@@ -130,7 +130,7 @@
 
 <script setup lang="ts">
 import {usePosStore} from "@/stores/posStore";
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {useUserStore} from "@/stores/userStore";
 import MaterialSymbolsLightDownload from "@/components/icons/download.vue";
 import MaterialSymbolsLightReceiptLong from "@/components/icons/receipt.vue";
@@ -147,6 +147,22 @@ const openBill = async (billId: number): Promise<void> => {
   selectedBill.value = await posStore.fetchBill(billId)
   posBill.value?.openModal()
 }
+
+const initials = computed<string>(() => {
+  let name = 'EE'
+  if (userStore.customer) {
+    name = userStore.customer.name
+  }
+  const i = name.match(/(\b\S)?/g)?.join("").toUpperCase()
+  return i ? i : 'EE'
+})
+
+const joinedDate = computed<string | null>(() => {
+  if (userStore.customer) {
+    return new Date(userStore.customer?.created_unix * 1000).toLocaleDateString('en-US')
+  }
+  return null
+})
 
 onMounted(async () => {
   if (userStore.customer) {
