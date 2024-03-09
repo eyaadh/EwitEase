@@ -41,9 +41,9 @@ const router = createRouter({
             }
         },
         {
-            path: '/sales',
-            name: 'sales',
-            component: () => import('@/views/SalesView.vue'),
+            path: '/profile',
+            name: 'profile',
+            component: () => import('@/views/ProfileView.vue'),
             beforeEnter: requireAuth,
             meta: {
                 authenticatedLayout: true,

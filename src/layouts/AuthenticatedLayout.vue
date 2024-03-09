@@ -105,7 +105,7 @@ const route = useRoute()
 const navs = reactive<navigation[]>([
   {id: 1, location: '/', icon: shallowRef(MaterialSymbolsLightStore), name: 'Store Home', active: true},
   {id: 2, location: '/cart', icon: shallowRef(MaterialSymbolsLightShoppingCart), name: 'My Cart', active: false},
-  {id: 3, location: '/sales', icon: shallowRef(MaterialSymbolsLightListAltRounded), name: 'My Sales', active: false},
+  {id: 3, location: '/profile', icon: shallowRef(MaterialSymbolsLightListAltRounded), name: 'My Profile', active: false},
 ])
 
 const activeNav = computed<navigation>(() => {
