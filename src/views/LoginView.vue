@@ -4,7 +4,7 @@
       <h1 class="text-xl font-bold uppercase">Ewit</h1>
       <span class="font-medium text-sm">Ease</span>
     </div>
-    <h2 class="animate-in slide-in-from-top duration-700 text-2xl font-extralight text-gray-500">Sing in to your
+    <h2 class="animate-in slide-in-from-top duration-700 text-2xl font-extralight text-gray-500">Sign in to your
       account</h2>
     <div
       class="animate-in slide-in-from-bottom duration-700 mx-auto max-w-sm sm:max-w-4xl w-[480px] border-t border-gray-50 ring-inset rounded-md flex flex-col overflow-hidden">
@@ -68,7 +68,7 @@
                       class="w-full px-2 py-1 border rounded bg-gray-950 hover:bg-gray-500 text-white text-sm"
                       type="submit"
                       @click.prevent="prepareSignIn">
-                {{ confirmationResult !== null ? 'Sing in' : 'Get verification code' }}
+                {{ confirmationResult !== null ? 'Sign in' : 'Get verification code' }}
               </button>
             </div>
           </form>
