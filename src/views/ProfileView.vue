@@ -20,6 +20,14 @@
                 <p class="text-xs leading-6 tracking-tight font-semibold">Total Spent:</p>
                 <p class="text-xs leading-6 tracking-tight">MRF. {{ userStore.customer?.total_spent }}</p>
               </div>
+              <div class="flex items-center gap-2 font-extralight">
+                <p class="text-xs leading-6 tracking-tight font-semibold">Loyalty Program:</p>
+                <p class="text-xs leading-6 tracking-tight">{{ userStore.customer?.loyalty_program ? userStore.customer?.loyalty_program?.name : 'None' }}</p>
+              </div>
+              <div class="flex items-center gap-2 font-extralight">
+                <p class="text-xs leading-6 tracking-tight font-semibold">Loyalty Points:</p>
+                <p class="text-xs leading-6 tracking-tight">{{ userStore.customer?.loyalty_points ? userStore.customer?.loyalty_points : 0 }}</p>
+              </div>
             </div>
             <div class="flex justify-center items-center rounded-full p-2 w-12 h-12 bg-gray-950 text-white text-sm">
               <span>{{ initials }}</span>

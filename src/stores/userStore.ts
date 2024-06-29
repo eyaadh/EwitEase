@@ -6,11 +6,14 @@ import type {AxiosRequestConfig} from 'axios'
 import type {FirebaseUser} from "@/types/firebaseUser";
 import type {Customer} from "@/types/ewityCustomer";
 import generateSignature from "@/utils/generateProxySignature";
+import {StorageSerializers, useStorage} from "@vueuse/core";
 
 
 export const useUserStore = defineStore("userStore", {
     state: () => ({
-        userData: null as FirebaseUser | null,
+        userData: useStorage("userData", null as FirebaseUser | null, localStorage, {
+            serializer: StorageSerializers.object,
+        }),
         customer: null as Customer | null,
         loadingSession: false,
         proxyApiUrl: import.meta.env.VITE_PROXY_API_URL as string,

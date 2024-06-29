@@ -17,7 +17,7 @@ export interface Customer {
     loyalty_points: number | null;
     loyalty_text: string;
     loyalty_text_extra: string | null;
-    loyalty_program: string | null;
+    loyalty_program: any | null;
     created_unix: number;
 }
 
