@@ -1,6 +1,6 @@
 import {defineStore} from "pinia"
-import {signOut, onAuthStateChanged} from "firebase/auth";
-import {auth} from "@/utils/firebaseConfig"
+// import {signOut, onAuthStateChanged} from "firebase/auth";
+// import {auth} from "@/utils/firebaseConfig"
 import axios from "axios";
 import type {AxiosRequestConfig} from 'axios'
 import type {FirebaseUser} from "@/types/firebaseUser";
@@ -21,10 +21,60 @@ export const useUserStore = defineStore("userStore", {
         } as AxiosRequestConfig
     }),
     actions: {
+        async sendMsgOwlOtp(phoneNumber: string) {
+            return new Promise(async (resolve, reject) => {
+                const config: AxiosRequestConfig = {...this.axiosConfig}
+                config.url = `${this.proxyApiUrl}otp/send`
+                config.headers = {
+                    'X-Signature': generateSignature(config.url)
+                }
+                config.method = 'POST'
+                config.data = {phoneNumber: phoneNumber}
+
+                try {
+                    const response = await axios.request(config)
+                    if (response.status === 200) {
+                        resolve(response.data)
+                    }
+                    reject(response)
+                } catch (e) {
+                    reject(e)
+                }
+            })
+        },
+        async verifyMsgOwlOtp(phoneNumber: string, code: string) {
+            return new Promise(async (resolve, reject) => {
+                const config: AxiosRequestConfig = {...this.axiosConfig}
+                config.url = `${this.proxyApiUrl}otp/verify`
+                config.headers = {
+                    'X-Signature': generateSignature(config.url)
+                }
+                config.method = 'POST'
+                config.data = {phoneNumber: phoneNumber, code: code}
+
+                try {
+                    const response = await axios.request(config)
+                    if (response.status === 200) {
+                        if (response.data.status === true) {
+                            this.userData = {
+                                uid: Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2),
+                                phoneNumber: phoneNumber,
+                            }
+                            resolve(this.userData)
+                        } else {
+                            reject(response.data)
+                        }
+                    }
+                    reject(response)
+                } catch (e) {
+                    reject(e)
+                }
+            })
+        },
         async logoutUser() {
             return new Promise(async (resolve, reject) => {
                 try {
-                    await signOut(auth)
+                    // await signOut(auth) <-- if using firebase
                     this.userData = null
                     resolve(true)
                 } catch (error) {
@@ -71,14 +121,16 @@ export const useUserStore = defineStore("userStore", {
         },
         currentUser() {
             return new Promise((resolve, reject) => {
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        this.userData = user as FirebaseUser
-                    } else {
-                        this.userData = null
-                    }
-                    resolve(user)
-                }, (e) => reject(e))
+                // use AuthState if using firebase
+                // onAuthStateChanged(auth, (user) => {
+                //     if (user) {
+                //         this.userData = user as FirebaseUser
+                //     } else {
+                //         this.userData = null
+                //     }
+                //     resolve(user)
+                // }, (e) => reject(e))
+                resolve(true)
             })
         },
 

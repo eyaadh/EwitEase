@@ -1,25 +1,8 @@
 <template>
   <div class="flex flex-col gap-y-6 min-h-screen items-center justify-center">
-    <div class="animate-pulse  flex items-baseline">
-      <svg viewBox="0 0 1186 1356" class="w-20">
-        <path
-          d="m135 0 19 9 243 126 23 12 33 17 79 41 15 8v233l5 2 24 12 7 4 5-1 33-17 1-233 24-12 19-10 33-17 23-12L1020 7l13-7h2v144l-22 12-20 10-19 10-33 17-23 12-137 71-9 5h-2l1 87 24-12 19-10 33-17 23-12 162-84h3v622l-8 5-41 21-19 10-33 17-46 24h-1l-1-478-41 21-19 10-33 17-23 12-166 86-17 9h-5l-19-10-33-17-241-125-5-3-1 477-2 1-133-69-13-7V232l36 18 19 10 33 17 160 83 15 8v-87l-45-23-19-10-33-17-160-83-6-4z"
-          fill="currentColor"/>
-        <path
-          d="M768 552h2v481l-22 12-22 11-19 10-35 18-23 12-25 13h-2V628l37-19 19-10 29-15 19-10 29-15zM401 552l6 2 19 10 27 14 19 10 29 15 19 10 27 14 2 2v480l-4-1-26-13-19-10-33-17-52-27-14-8z"
-          fill="currentColor"/>
-        <path
-          d="m552 1168 3 3 17 36 28 60 10 23 3 8 2-3 13-29 32-70 12-26 2-2 4 15 27 116 11 48v2h-27l-20-89-2-16-7 19-18 36-11 23-17 34-3-4-23-47-11-23-14-30-3-9-3 19-18 83-1 4h-27l8-37 28-123zM810 1171h28l16 4 15 6 12 8 10 9 9 10 8 13 6 15 3 14v25l-4 17-8 17-9 12-13 13-14 9-14 6-15 4-8 1h-16l-17-3-16-6-11-6-9-7-9-8-10-13-8-16-4-14-1-6v-26l4-17 8-17 9-12 13-13 14-9 14-6zm7 26-14 3-14 7-10 9-8 9-7 14-3 12v23l4 14 6 11 10 12 13 9 12 5 9 2h18l15-4 11-6 10-9 8-9 7-14 3-12v-22l-3-11-8-16-9-10-8-7-14-7-14-3z"
-          fill="currentColor"/>
-        <path
-          d="M143 1174h28v65h85v-64l1-1h28v175h-29v-84h-85v84h-29v-174zM325 1174h97v25h-69v43h69v26h-69v55h69v26h-97z"
-          fill="currentColor"/>
-        <path
-          d="M985 1171h24l12 3 12 6 7 6 6 9 1 5-19 10-4 1-7-9-10-5-10-1-10 2-6 4-4 5-2 11 3 9 6 7 14 9 23 11 15 10 9 9 6 12 2 11-1 16-4 13-6 9-5 6-10 7-13 5-12 2h-15l-15-3-14-7-8-7-7-11-4-12 16-8 5-2h3l6 12 7 6 11 4h17l9-4 5-5 3-5 1-4v-11l-4-8-9-8-15-8-16-8-14-9-10-9-6-9-3-8-1-6v-11l3-13 5-9 8-9 9-6 11-4z"
-         fill="currentColor"/>
-        <path d="M0 1174h121v25H75v150H46v-150H0z" fill="currentColor"/>
-        <path d="M1065 1174h120l1 1v24h-46v150h-29v-150h-46z" fill="currentColor"/>
-      </svg>
+    <div class="animate-in slide-in-from-top duration-700 flex items-baseline border-b border-gray-100">
+      <h1 class="text-xl font-bold uppercase">Ewit</h1>
+      <span class="font-medium text-sm">Ease</span>
     </div>
     <h2 class="animate-in slide-in-from-top duration-700 text-2xl font-extralight text-gray-500">Sign in to your
       account</h2>
@@ -50,8 +33,8 @@
                     <select id="country" v-model="countryCode" autocomplete="country"
                             class="h-full rounded-md border-0 bg-transparent py-0 pl-2 pr-8 text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600"
                             name="country">
-                      <option value="960">MV(+960)</option>
-                      <option value="1">US(+1)</option>
+                      <option value="+960">MV(+960)</option>
+                      <option value="+1">US(+1)</option>
                     </select>
                   </div>
                   <input id="phone-number" v-model="phoneNumber"
@@ -109,50 +92,60 @@
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
 import VOtpInput from "vue3-otp-input";
+import {auth} from "@/utils/firebaseConfig";
+import type {ConfirmationResult} from "firebase/auth";
+import {RecaptchaVerifier, signInWithPhoneNumber} from "firebase/auth";
 import {XCircleIcon} from '@heroicons/vue/20/solid'
 import {useUserStore} from "@/stores/userStore";
+import type {FirebaseUser} from "@/types/firebaseUser";
 import {useRouter} from "vue-router";
 
 const otpInput = ref<InstanceType<typeof VOtpInput> | null>(null);
 const phoneNumber = ref<string>('')
-const countryCode = ref<string>('960')
+const countryCode = ref<string>('+960')
 const otpNumber = ref<string>('')
-const confirmationResult = ref<boolean>(false)
+const confirmationResult = ref<ConfirmationResult | null>(null)
 const errorMessage = ref<string>('')
 const isError = ref<boolean>(false)
 const userStore = useUserStore()
 const router = useRouter()
 
 const prepareSignIn = (): void => {
-  if (phoneNumber.value) {
-    if (confirmationResult.value) { // Check if confirmationResult is available
-      // validate and the push towards home
-      // userStore.userData = result.user as FirebaseUser
-      // router.push({name: 'home'});
-      userStore.verifyMsgOwlOtp(`${countryCode.value}${phoneNumber.value}`, otpNumber.value)
-        .then(resp => router.push({name: 'home'}))
-        .catch(err => {
-          console.error(err)
-          errorMessage.value = err.detail
-          isError.value = true
-        })
-    } else {
-      userStore.sendMsgOwlOtp(`${countryCode.value}${phoneNumber.value}`)
-        .then(resp => {
-          confirmationResult.value = true
-        })
-        .catch(err => {
-          console.error(err)
-          errorMessage.value = err.detail
-          isError.value = true
-        })
-    }
+  if (confirmationResult.value) { // Check if confirmationResult is available
+    confirmationResult.value.confirm(otpNumber.value)
+      .then((result) => {
+        userStore.userData = result.user as FirebaseUser
+        router.push({name: 'home'});
+      }).catch((error) => {
+      console.error(error)
+      errorMessage.value = error.code.split('/')[1].trim()
+      isError.value = true
+    });
+  } else {
+    signInWithPhoneNumber(auth, `${countryCode.value}${phoneNumber.value}`, (window as any).recaptchaVerifier)
+      .then((result) => {
+        isError.value = false
+        confirmationResult.value = result // Update confirmationResult
+      }).catch((error) => {
+      console.log(error.code)
+      confirmationResult.value = null
+      errorMessage.value = error.code.split('/')[1].trim()
+      isError.value = true
+    });
   }
 
 }
 
 onMounted(() => {
-
+  (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, 'sign-in-button', {
+    'size': 'invisible',
+    'callback': (_: any) => {
+      //
+    },
+    'error-callback': (error: any) => {
+      console.log(error);
+    }
+  })
 })
 </script>
 

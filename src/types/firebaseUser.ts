@@ -15,10 +15,10 @@ export interface StsTokenManager {
 
 export interface FirebaseUser {
     uid: string;
-    emailVerified: boolean;
-    isAnonymous: boolean;
+    emailVerified?: boolean;
+    isAnonymous?: boolean;
     phoneNumber: string;
-    providerData: ProviderData[];
+    providerData?: ProviderData[];
     stsTokenManager?: StsTokenManager;
     createdAt?: string;
     lastLoginAt?: string;

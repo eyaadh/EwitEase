@@ -4,7 +4,14 @@
     <div class="hidden sm:flex flex-col min-h-full items-center gap-5 w-16 py-4 px-1">
       <div class="h-10 w-10">
         <div class="flex items-center justify-center h-full w-full rounded-full bg-gray-950">
-          <p class="text-white">TM</p>
+          <svg viewBox="0 0 1186 1356" class="h-8" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="m135 206 19 9 243 126 23 12 33 17 79 41 15 8v233l5 2 24 12 7 4 5-1 33-17 1-233 24-12 19-10 33-17 23-12 299-155 13-7h2v144l-22 12-20 10-19 10-33 17-23 12-137 71-9 5h-2l1 87 24-12 19-10 33-17 23-12 162-84h3v622l-8 5-41 21-19 10-33 17-46 24h-1l-1-478-41 21-19 10-33 17-23 12-166 86-17 9h-5l-19-10-33-17-241-125-5-3-1 477-2 1-133-69-13-7V438l36 18 19 10 33 17 160 83 15 8v-87l-45-23-19-10-33-17-160-83-6-4z"
+              fill="#999"/>
+            <path
+              d="M768 758h2v481l-22 12-22 11-19 10-35 18-23 12-25 13h-2V834l37-19 19-10 29-15 19-10 29-15zM401 758l6 2 19 10 27 14 19 10 29 15 19 10 27 14 2 2v480l-4-1-26-13-19-10-33-17-52-27-14-8z"
+              fill="#ccc"/>
+          </svg>
         </div>
       </div>
       <div class="h-2/4 flex-1 flex flex-col gap-4">
@@ -103,9 +110,15 @@ import MaterialSymbolsLightListAltRounded from "@/components/icons/list.vue"
 
 const route = useRoute()
 const navs = reactive<navigation[]>([
-  {id: 1, location: '/', icon: shallowRef(MaterialSymbolsLightStore), name: 'Store Home', active: true},
+  {id: 1, location: '/', icon: shallowRef(MaterialSymbolsLightStore), name: 'The Most', active: true},
   {id: 2, location: '/cart', icon: shallowRef(MaterialSymbolsLightShoppingCart), name: 'My Cart', active: false},
-  {id: 3, location: '/profile', icon: shallowRef(MaterialSymbolsLightListAltRounded), name: 'My Profile', active: false},
+  {
+    id: 3,
+    location: '/profile',
+    icon: shallowRef(MaterialSymbolsLightListAltRounded),
+    name: 'My Profile',
+    active: false
+  },
 ])
 
 const activeNav = computed<navigation>(() => {
