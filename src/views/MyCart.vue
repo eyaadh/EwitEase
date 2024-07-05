@@ -54,6 +54,9 @@
                   :label="isPlaceOrderAllowed ? 'Place order': 'Cart is empty'"
                   class="mt-5"
                   @click="postToEwity"/>
+
+        <p class="mt-4 text-[10px] italic font-bold tracking-tight text-red-800">Free delivery for purchases over MRF 100. For purchases below this amount, a delivery fee of MRF 10 will apply.</p>
+
       </div>
 
     </div>
