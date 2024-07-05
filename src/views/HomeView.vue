@@ -9,11 +9,14 @@
 
     <portal to="searchBar">
       <div class="relative isolate rounded-2xl overflow-hidden">
-        <input v-if="showSearch" id="search" v-model="posStore.productFilterQueryValue" class="animate-in slide-in-from-right duration-700 block max-w-48 sm:max-w-full w-full rounded-2xl border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 placeholder:italic focus:ring-2 focus:ring-inset focus:ring-gray-300 text-xs" name="search"
+        <input v-if="showSearch" id="search" v-model="posStore.productFilterQueryValue"
+               class="animate-in slide-in-from-right duration-700 block max-w-48 sm:max-w-full w-full rounded-2xl border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 placeholder:italic focus:ring-2 focus:ring-inset focus:ring-gray-300 text-xs"
+               name="search"
                placeholder="Product name..."
                type="text"/>
         <div :class="[showSearch? 'absolute top-0 right-[0.2px]': '']">
-          <CircleButton :class="[showSearch? 'p-1.5 w-9 h-[36px] rounded-2xl border border-gray-300': '']" @click="showSearch = !showSearch">
+          <CircleButton :class="[showSearch? 'p-1.5 w-9 h-[36px] rounded-2xl border border-gray-300': '']"
+                        @click="showSearch = !showSearch">
             <MaterialSymbolsLightSearch class="h-4 w-4"/>
           </CircleButton>
         </div>
@@ -22,14 +25,23 @@
 
     <!--section heading-->
     <div class="animate-in slide-in-from-top duration-700 flex items-center gap-2 text-gray-500">
-      <MaterialSymbolsLightShoppingBasket class="h-5 sm:h-6 text-xl"/>
+      <MaterialSymbolsLightShoppingBasket class="hidden sm:block h-5 sm:h-6 text-xl"/>
+      <svg viewBox="0 0 1186 1356" class="sm:hidden h-8" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="m135 206 19 9 243 126 23 12 33 17 79 41 15 8v233l5 2 24 12 7 4 5-1 33-17 1-233 24-12 19-10 33-17 23-12 299-155 13-7h2v144l-22 12-20 10-19 10-33 17-23 12-137 71-9 5h-2l1 87 24-12 19-10 33-17 23-12 162-84h3v622l-8 5-41 21-19 10-33 17-46 24h-1l-1-478-41 21-19 10-33 17-23 12-166 86-17 9h-5l-19-10-33-17-241-125-5-3-1 477-2 1-133-69-13-7V438l36 18 19 10 33 17 160 83 15 8v-87l-45-23-19-10-33-17-160-83-6-4z"
+          fill="#999"/>
+        <path
+          d="M768 758h2v481l-22 12-22 11-19 10-35 18-23 12-25 13h-2V834l37-19 19-10 29-15 19-10 29-15zM401 758l6 2 19 10 27 14 19 10 29 15 19 10 27 14 2 2v480l-4-1-26-13-19-10-33-17-52-27-14-8z"
+          fill="#ccc"/>
+      </svg>
       <h2 class="sm:text-xl font-bold leading-6 tracking-tighter">Categories</h2>
     </div>
 
     <!--Categories Container-->
-    <div v-infinite-scroll="[loadMoreCategories, { distance: posStore.categoriesTotalItems > 10 ? posStore.categories!.length - 5 : 1, direction: 'right' }]"
-         class="sticky top-0 w-full rounded-md overflow-auto p-2.5 bg-gray-100/60 [&::-webkit-scrollbar]:hidden"
-         v-bind="categoryContainerProps">
+    <div
+      v-infinite-scroll="[loadMoreCategories, { distance: posStore.categoriesTotalItems > 10 ? posStore.categories!.length - 5 : 1, direction: 'right' }]"
+      class="sticky top-0 w-full rounded-md overflow-auto p-2.5 bg-gray-100/60 [&::-webkit-scrollbar]:hidden"
+      v-bind="categoryContainerProps">
       <div class="flex gap-2" v-bind="categoryWrapperProps">
         <div v-for="{data: cat} in categoryList"
              class="group animate-in slide-in-from-bottom duration-700 relative border border-gray-200 h-20 w-20 sm:h-36 sm:w-36 flex-shrink-0 rounded-md overflow-hidden"
@@ -56,8 +68,9 @@
     </div>
 
     <!--Products Container-->
-    <div v-infinite-scroll="[loadMoreProducts, { distance: posStore.productsTotalItems > 10 ? posStore.products!.length - 5 : 1}]"
-         class="h-[620px] rounded-lg overflow-auto [&::-webkit-scrollbar]:hidden">
+    <div
+      v-infinite-scroll="[loadMoreProducts, { distance: posStore.productsTotalItems > 10 ? posStore.products!.length - 5 : 1}]"
+      class="h-[620px] rounded-lg overflow-auto [&::-webkit-scrollbar]:hidden">
       <div :class="[ posStore.productsTotalItems > 15 ? '' : 'h-full',
         'w-full rounded-md p-2.5 bg-gray-100/60 [&::-webkit-scrollbar]:hidden']" v-bind="productContainerProps">
         <div class="grid grid-cols-4 sm:grid-cols-6 grid-flow-row gap-2" v-bind="productWrapperProps">
@@ -67,7 +80,8 @@
                @click="productSelected(product)">
             <img
               :alt="product.name"
-              :src="product.variants[0].images.length > 0 ? product.variants[0].images[0].url : posStore.productDefaultImage" class="h-full w-full object-cover object-center group-hover:scale-110"/>
+              :src="product.variants[0].images.length > 0 ? product.variants[0].images[0].url : posStore.productDefaultImage"
+              class="h-full w-full object-cover object-center group-hover:scale-110"/>
             <div
               class="rounded-b-md flex flex-col gap-1 absolute bg-neutral-900/60 w-full bottom-0 py-1.5 px-2 h-14 sm:h-16 text-gray-100 group-hover:bg-gray-900/40 filter backdrop-blur-sm">
               <h3 class="font-extralight text-[9.5px] sm:text-xs line-clamp-2 uppercase">{{ product.name }}</h3>
@@ -116,7 +130,8 @@
               <div class="sm:col-span-1">
                 <label class="block text-sm font-medium leading-6 text-gray-900" for="email">Contact Number</label>
                 <div class="mt-2">
-                  <input id="phone-number" :value="userStore.userData?.phoneNumber" autocomplete="tel" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6 disabled:text-gray-400"
+                  <input id="phone-number" :value="userStore.userData?.phoneNumber" autocomplete="tel"
+                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6 disabled:text-gray-400"
                          disabled name="phone-number"
                          type="tel"/>
                 </div>
@@ -125,7 +140,9 @@
               <div class="sm:col-span-1">
                 <label class="block text-sm font-medium leading-6 text-gray-900" for="email">Full Name</label>
                 <div class="mt-2">
-                  <input id="name" v-model="customerRegistrationForm.name" autocomplete="name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6" name="name"
+                  <input id="name" v-model="customerRegistrationForm.name" autocomplete="name"
+                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
+                         name="name"
                          placeholder="Ahmed Ibrahim Mohamed"
                          type="tel"/>
                 </div>
@@ -139,7 +156,9 @@
               <div class="sm:col-span-1">
                 <label class="block text-sm font-medium leading-6 text-gray-900" for="email">Email</label>
                 <div class="mt-2">
-                  <input id="email" v-model="customerRegistrationForm.email" autocomplete="email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6" name="email"
+                  <input id="email" v-model="customerRegistrationForm.email" autocomplete="email"
+                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
+                         name="email"
                          placeholder="ahmed@ibrahim.com"
                          type="email"/>
                 </div>
@@ -148,7 +167,8 @@
               <div class="sm:col-span-1">
                 <label class="block text-sm font-medium leading-6 text-gray-900" for="email">Address</label>
                 <div class="mt-2">
-                  <input id="address" v-model="customerRegistrationForm.address" autocomplete="address" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
+                  <input id="address" v-model="customerRegistrationForm.address" autocomplete="address"
+                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
                          name="address"
                          placeholder="Hiya B 804, Flat Magu, Phase 2, Hulhumale"
                          type="text"/>
