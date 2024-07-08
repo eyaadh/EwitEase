@@ -123,18 +123,20 @@ export const useUserStore = defineStore("userStore", {
             })
         },
         currentUser() {
-            return new Promise((resolve, reject) => {
-                // use AuthState if using firebase
-                // onAuthStateChanged(auth, (user) => {
-                //     if (user) {
-                //         this.userData = user as FirebaseUser
-                //     } else {
-                //         this.userData = null
-                //     }
-                //     resolve(user)
-                // }, (e) => reject(e))
-                resolve(true)
-            })
+            // return new Promise((resolve, reject) => {
+            //     // use AuthState if using firebase
+            //     // onAuthStateChanged(auth, (user) => {
+            //     //     if (user) {
+            //     //         this.userData = user as FirebaseUser
+            //     //     } else {
+            //     //         this.userData = null
+            //     //     }
+            //     //     resolve(user)
+            //     // }, (e) => reject(e))
+            //
+            // })
+
+            return !!this.userData;
         },
 
     }
